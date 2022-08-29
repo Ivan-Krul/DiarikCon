@@ -6,7 +6,7 @@ void WorkDay::append(Lesson lesson_)
 	_lessons.push_back(lesson_);
 }
 
-Lesson& WorkDay::lesson(int _index)
+Lesson& WorkDay::operator[](int _index)
 {
 	if(_index >= _lessons.size())
 	{

@@ -129,11 +129,13 @@
   <ItemGroup>
     <ClCompile Include="DiarikCon.cpp" />
     <ClCompile Include="Lesson.cpp" />
+    <ClCompile Include="WeekWeek.cpp" />
     <ClCompile Include="WorkDay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Define.h" />
     <ClInclude Include="Lesson.h" />
+    <ClInclude Include="WeekWeek.h" />
     <ClInclude Include="WorkDay.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -7,7 +7,7 @@ private:
 	std::vector<Lesson> _lessons;
 public:
 	void append(Lesson lesson_);
-	Lesson& lesson(int _index);
+	Lesson& operator[](int _index);
 	int size();
 
 	std::wstring wform();
