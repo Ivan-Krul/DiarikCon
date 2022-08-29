@@ -29,6 +29,52 @@ std::wstring Lesson::hw()
 
 void Lesson::load(std::wstring dir_)
 {
+	std::wifstream ifs;
+	ifs.open(dir_, std::ios::in);
+	if(!ifs.is_open())
+	{
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): File isn't open: "<<dir_<<"\n\a";
+		std::cin.get();
+		ifs.close();
+		return;
+	}
+	if(ifs.fail())
+	{
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): File is failed: " << dir_ << "\n\a";
+		std::cin.get();
+		ifs.close();
+		return;
+	}
+	std::getline(ifs,_name);
+	std::getline(ifs, _hw);
+	ifs >> _is_done;
+	ifs >> _mark;
+
+	ifs.close();
+}
+
+void Lesson::save(std::wstring dir_)
+{
+	std::wofstream ofs;
+	ofs.open(dir_,  std::ios::out);
+	if(ofs.fail())
+	{
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): File is failed: " << dir_ << "\n\a";
+		std::cin.get();
+		ofs.close();
+		return;
+	}
+	if(!ofs || !ofs.is_open())
+	{
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): File isn't open: " << dir_ << "\n\a";
+		std::cin.get();
+		ofs.close();
+		return;
+	}
+	ofs << _name << '\n';
+	ofs << _hw << '\n';
+	ofs << _is_done << ' ' << _mark;
+	ofs.close();
 }
 
 std::wstring Lesson::wform()

@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <fstream>
 #include "Define.h"
 class Lesson : public Itask
 {
@@ -19,4 +20,5 @@ public:
 
 	std::wstring wform();
 	void load(std::wstring dir_);
+	void save(std::wstring dir_);
 };
