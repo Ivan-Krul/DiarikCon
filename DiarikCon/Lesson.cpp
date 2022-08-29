@@ -32,7 +32,10 @@ std::wstring Lesson::wform()
 	const char *not_aviable = "N/a";
 	std::wstringstream sstream;
 	sstream << "[" << _name << "] : ["<<_hw<<"] is";
-	sstream << _is_done ? " " : "n't ";
+	if(_is_done)
+		sstream << " ";
+	else
+		sstream << "n't ";
 	sstream << "done [";
 	if(_mark == -1) sstream << not_aviable;
 	else sstream << _mark;

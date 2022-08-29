@@ -1,13 +1,17 @@
 #pragma once
 #include "Lesson.h"
-class WorkDay
+class WorkDay : public Iform
 {
 private:
-	int _size;
+	int _size = 0;
 	Lesson **_lessons;
 public:
 	void append(Lesson lesson_);
-	Lesson lesson(int _index);
+	Lesson& lesson(int _index);
+	int size();
 
+	std::wstring wform();
+
+	~WorkDay();
 };
 
