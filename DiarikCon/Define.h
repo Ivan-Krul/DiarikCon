@@ -2,7 +2,8 @@
 #include <iostream>
 #include <cassert>
 
-__interface Iform
+__interface Itask
 {
 	std::wstring wform();
+	void load(std::wstring dir_);
 };

@@ -27,6 +27,10 @@ std::wstring Lesson::hw()
 	return _hw;
 }
 
+void Lesson::load(std::wstring dir_)
+{
+}
+
 std::wstring Lesson::wform()
 {
 	const char *not_aviable = "N/a";

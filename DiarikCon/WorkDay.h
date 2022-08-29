@@ -1,6 +1,6 @@
 #pragma once
 #include "Lesson.h"
-class WorkDay : public Iform
+class WorkDay : public Itask
 {
 private:
 	int _size = 0;

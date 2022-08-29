@@ -133,7 +133,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Define.h" />
-    <ClInclude Include="Disk.h" />
     <ClInclude Include="Lesson.h" />
     <ClInclude Include="WorkDay.h" />
   </ItemGroup>

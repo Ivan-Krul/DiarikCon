@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include "Define.h"
-class Lesson : public Iform
+class Lesson : public Itask
 {
 	std::wstring _name;
 	std::wstring _hw;
@@ -18,4 +18,5 @@ public:
 	short mark();
 
 	std::wstring wform();
+	void load(std::wstring dir_);
 };
