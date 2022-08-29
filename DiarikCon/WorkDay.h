@@ -1,17 +1,17 @@
 #pragma once
 #include "Lesson.h"
-class WorkDay// : public Itask
+#include <vector>
+class WorkDay : public Itask
 {
 private:
-	int _size = 0;
-	Lesson **_lessons;
+	std::vector<Lesson> _lessons;
 public:
 	void append(Lesson lesson_);
 	Lesson& lesson(int _index);
 	int size();
 
 	std::wstring wform();
-
-	~WorkDay();
+	void load(std::wstring dir_);
+	void save(std::wstring dir_);
 };
 

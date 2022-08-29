@@ -29,6 +29,7 @@ std::wstring Lesson::hw()
 
 void Lesson::load(std::wstring dir_)
 {
+	
 	std::wifstream ifs;
 	ifs.open(dir_, std::ios::in);
 	if(!ifs.is_open())
