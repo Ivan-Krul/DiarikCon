@@ -24,7 +24,7 @@
     <ClCompile Include="WorkDay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WeekWeek.cpp">
+    <ClCompile Include="WorkWeek.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,7 +38,7 @@
     <ClInclude Include="WorkDay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WeekWeek.h">
+    <ClInclude Include="WorkWeek.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

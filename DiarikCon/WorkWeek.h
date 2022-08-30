@@ -10,7 +10,7 @@ enum class Week : unsigned char
 	saturday,
 	sunday
 };
-class WeekWeek : public Itask
+class WorkWeek : public Itask
 {
 	WorkDay _week[7];
 public:
@@ -20,4 +20,3 @@ public:
 	void load(std::wstring dir_);
 	void save(std::wstring dir_);
 };
-
