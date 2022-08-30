@@ -11,7 +11,7 @@ Lesson& WorkDay::operator[](int _index)
 	if(_index >= _lessons.size())
 	{
 		std::wcerr << "ERROR: " << __FUNCTION__ << "(): Index is out of range: " << _index << ", but max element: "<<_lessons.size()-1 << "\n\a";
-		std::cin.get();
+		std::wcin.get();
 	}
 	return _lessons[_index% _lessons.size()];
 }
@@ -59,14 +59,14 @@ void WorkDay::load(std::wstring dir_)
 	if(!ifs.is_open())
 	{
 		std::wcerr << "ERROR: " << __FUNCTION__ << "(): File isn't open: " << dir_ << "\n\a";
-		std::cin.get();
+		std::wcin.get();
 		ifs.close();
 		return;
 	}
 	if(ifs.fail())
 	{
 		std::wcerr << "ERROR: " << __FUNCTION__ << "(): File is failed: " << dir_ << "\n\a";
-		std::cin.get();
+		std::wcin.get();
 		ifs.close();
 		return;
 	}
@@ -77,7 +77,8 @@ void WorkDay::load(std::wstring dir_)
 		short mark;
 		std::getline(ifs, name);
 		std::getline(ifs, hw);
-		_lessons.push_back(Lesson(name, hw));
+		_lessons.push_back(Lesson(name));
+		_lessons[_lessons.size() - 1].mark_homework(hw);
 		ifs >> is_done >> mark;
 		if(is_done) _lessons[_lessons.size() - 1].mark_done();
 		_lessons[_lessons.size() - 1].mark_mark(mark);
@@ -92,14 +93,14 @@ void WorkDay::save(std::wstring dir_)
 	if(ofs.fail())
 	{
 		std::wcerr << "ERROR: " << __FUNCTION__ << "(): File is failed: " << dir_ << "\n\a";
-		std::cin.get();
+		std::wcin.get();
 		ofs.close();
 		return;
 	}
 	if(!ofs || !ofs.is_open())
 	{
 		std::wcerr << "ERROR: " << __FUNCTION__ << "(): File isn't open: " << dir_ << "\n\a";
-		std::cin.get();
+		std::wcin.get();
 		ofs.close();
 		return;
 	}
@@ -110,6 +111,10 @@ void WorkDay::save(std::wstring dir_)
 		ofs << _lessons[i].is_done() << ' ' << _lessons[i].mark()<<'\n';
 	}
 	ofs.close();
+}
+
+void WorkDay::delet(std::wstring name_)
+{
 }
 
 std::wstring WorkDay::type()

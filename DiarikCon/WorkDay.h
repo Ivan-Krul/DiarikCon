@@ -13,6 +13,7 @@ public:
 	std::wstring wform();
 	void load(std::wstring dir_);
 	void save(std::wstring dir_);
+	void delet(std::wstring name_); // TODO: do this in workday
 	std::wstring type() override;
 };
 

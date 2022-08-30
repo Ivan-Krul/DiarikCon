@@ -9,8 +9,9 @@ class Lesson : public Panel
 	bool _is_done = false;
 	short _mark = -1;
 public:
-	Lesson(std::wstring name_, std::wstring hw_);
+	Lesson(std::wstring name_);
 
+	void mark_homework(std::wstring hw_);
 	void mark_done();
 	void mark_mark(short mark_);
 	std::wstring name();

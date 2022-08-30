@@ -5,7 +5,7 @@ WorkDay &WorkWeek::operator[](Week index_)
 	if((int)index_ >= 7)
 	{
 		std::wcerr << "ERROR: " << __FUNCTION__ << "(): Index is out of range: " << (int)index_ << ", but max element: " << 7 << "\n\a";
-		std::cin.get();
+		std::wcin.get();
 	}
 	return _week[(unsigned char)index_%7];
 }
@@ -81,14 +81,14 @@ void WorkWeek::load(std::wstring dir_)
 	if(!ifs.is_open())
 	{
 		std::wcerr << "ERROR: " << __FUNCTION__ << "(): File isn't open: " << dir_ << "\n\a";
-		std::cin.get();
+		std::wcin.get();
 		ifs.close();
 		return;
 	}
 	if(ifs.fail())
 	{
 		std::wcerr << "ERROR: " << __FUNCTION__ << "(): File is failed: " << dir_ << "\n\a";
-		std::cin.get();
+		std::wcin.get();
 		ifs.close();
 		return;
 	}
@@ -128,14 +128,14 @@ void WorkWeek::save(std::wstring dir_)
 	if(ofs.fail())
 	{
 		std::wcerr << "ERROR: " << __FUNCTION__ << "(): File is failed: " << dir_ << "\n\a";
-		std::cin.get();
+		std::wcin.get();
 		ofs.close();
 		return;
 	}
 	if(!ofs || !ofs.is_open())
 	{
 		std::wcerr << "ERROR: " << __FUNCTION__ << "(): File isn't open: " << dir_ << "\n\a";
-		std::cin.get();
+		std::wcin.get();
 		ofs.close();
 		return;
 	}

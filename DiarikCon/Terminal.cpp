@@ -1,86 +1,86 @@
 #include "Terminal.h"
 
-void Terminal::_Cshow()
+bool Terminal::_CTshow()
 {
-    if(_is_terminal)
-    {
-        std::wcout << "panel: " << (*_cur_panel)._name << "\n";
-        (*_cur_panel).wform();
-    }
-    else
-    {
-        std::wcout << "panel chooser\n";
-        for(auto &panels : _panel_list)
-            std::wcout << panels._name << " " << panels.type() << '\n';
-    }
+	(*_cur_panel).wform();
+	return true;
+}
+bool Terminal::_CTadd()
+{
+	std::wstring dayweek;
+	std::wstring name;
+	std::wcin >> dayweek >> name;
+	Week wek;
+	if(dayweek == L"monday") wek = Week::monday;
+	else if(dayweek == L"tuesday") wek = Week::tuesday;
+	else if(dayweek == L"wednesday") wek = Week::wednesday;
+	else if(dayweek == L"thursday") wek = Week::thursday;
+	else if(dayweek == L"friday") wek = Week::friday;
+	else if(dayweek == L"saturday") wek = Week::saturday;
+	else if(dayweek == L"sunday") wek = Week::sunday;
+	else
+	{
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): name of day in week isn't common: "<<dayweek<<"\n";
+		std::wcerr << "ERROR: For users: try to type correctly\n\a";
+		std::wcin.get();
+		return false;
+	}
+
+	(*_cur_panel)[wek].append(Lesson(name));
+	return true;
 }
 
-void Terminal::input(wchar_t when_stop)
+bool Terminal::_CTdelete()
 {
-    wchar_t sym = L'\0';
-    std::wcout << "[!Type here]: ";
-    std::wcout << cmd;
-    while(sym != 13)
-    {
-        if(_kbhit())
-        {
-            sym = _getwch();
+	std::wstring dayweek;
+	std::wcin >> dayweek;
+	Week wek;
+	if(dayweek == L"monday") wek = Week::monday;
+	else if(dayweek == L"tuesday") wek = Week::tuesday;
+	else if(dayweek == L"wednesday") wek = Week::wednesday;
+	else if(dayweek == L"thursday") wek = Week::thursday;
+	else if(dayweek == L"friday") wek = Week::friday;
+	else if(dayweek == L"saturday") wek = Week::saturday;
+	else if(dayweek == L"sunday") wek = Week::sunday;
+	else
+	{
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): name of day in week isn't common: " << dayweek << "\n";
+		std::wcerr << "ERROR: For users: try to type correctly\n\a";
+		std::wcin.get();
+		return false;
+	}
+	std::wstring name;
+	std::wcin >> name;
 
-            if(sym != 13 || sym != when_stop)
-            {
+	for(int i = 0;i< (*_cur_panel)[wek].size();i++)
+	{
+		if((*_cur_panel)[wek][i].name() == name)
+		{
+			(*_cur_panel)[wek]
+			return true;
+		}
+	}
 
-                if(sym != '\b')
-                {
-                    cmd += sym;
-                    std::wcout << sym;
-                }
-                else if(cmd.size() != 0)
-                {
-                    cmd.erase(cmd.end() - 1);
-                    std::wcout << "\b \b";
-                }
-
-            }
-
-        }
-    }
-
-    for(int i = 0; i < cmd.size() + 14; i++) std::wcout << "\b \b";
-    std::wcout << cmd;
-
+	return true;
 }
 
-std::wstring Terminal::put(wchar_t blocked_sym)
+void Terminal::input()
 {
-    std::wstring str;
-    int i = 0;
-    while(i < cmd.size())
-    {
-        if(cmd[i] == blocked_sym) break;
-        i++;
-    }
-    str = cmd.substr(0, i);
-    cmd.erase(0, str.size() + 1);
-    return str;
+	std::wcin >> cmd;
+	for(auto &token : (_is_terminal?list_terminal_token:list_panel_token))
+	{
+		if(token.regex == cmd)
+		{
+			if(token.name == L"SHOW" && _is_terminal) _CTshow();
+		}
+	}
+	std::wcerr << "ERROR: " << __FUNCTION__ << "(): token to " << cmd << " isn't detected\n";
+	std::wcerr<<"ERROR: For users: this command wasn't found in list of accessed commands, try type correctly\n\a";
+	std::wcin.get();
+	return;
 }
 
-void Terminal::complete()
+bool Terminal::is_terminal()
 {
-    auto command = put(' ');
-    for(auto &token : (_is_terminal?list_terminal_token:list_panel_token))
-    {
-        if(command == token.regex)
-        {
-            if(_is_terminal)
-            {
-                _Cshow();
-            }
-            else
-            {
-
-            }
-            return;
-        }
-    }
-
+	return _is_terminal;
 }
