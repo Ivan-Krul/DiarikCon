@@ -1,7 +1,7 @@
 #pragma once
 #include "Lesson.h"
 #include <vector>
-class WorkDay : public Itask
+class WorkDay : public Panel
 {
 private:
 	std::vector<Lesson> _lessons;
@@ -13,5 +13,6 @@ public:
 	std::wstring wform();
 	void load(std::wstring dir_);
 	void save(std::wstring dir_);
+	std::wstring type() override;
 };
 

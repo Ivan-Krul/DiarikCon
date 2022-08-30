@@ -10,7 +10,7 @@ enum class Week : unsigned char
 	saturday,
 	sunday
 };
-class WorkWeek : public Itask
+class WorkWeek : public Panel
 {
 	WorkDay _week[7];
 public:
@@ -19,4 +19,5 @@ public:
 	std::wstring wform();
 	void load(std::wstring dir_);
 	void save(std::wstring dir_);
+	std::wstring type() override;
 };

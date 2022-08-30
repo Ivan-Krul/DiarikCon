@@ -35,7 +35,7 @@ std::wstring WorkDay::wform()
 	std::wstringstream sstream;
 	for(int i = 0; i < _lessons.size(); i++)
 	{
-		sstream << "[" << _lessons[i].name() << "]";
+		sstream << i+1<<": [" << _lessons[i].name() << "]";
 		for(int j = 0; j < maxch_name - _lessons[i].name().size(); j++)
 			sstream << " ";
 		sstream << ": [" << _lessons[i].hw() << "]";
@@ -110,5 +110,10 @@ void WorkDay::save(std::wstring dir_)
 		ofs << _lessons[i].is_done() << ' ' << _lessons[i].mark()<<'\n';
 	}
 	ofs.close();
+}
+
+std::wstring WorkDay::type()
+{
+	return L"WorkDay";
 }
 

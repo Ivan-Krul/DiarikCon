@@ -179,3 +179,8 @@ void WorkWeek::save(std::wstring dir_)
 	}
 	ofs.close();
 }
+
+std::wstring WorkWeek::type()
+{
+	return L"WorkWeek";
+}

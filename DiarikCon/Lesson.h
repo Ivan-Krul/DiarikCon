@@ -2,7 +2,7 @@
 #include <string>
 #include <fstream>
 #include "Define.h"
-class Lesson : public Itask
+class Lesson : public Panel
 {
 	std::wstring _name;
 	std::wstring _hw;
@@ -21,4 +21,5 @@ public:
 	std::wstring wform();
 	void load(std::wstring dir_);
 	void save(std::wstring dir_);
+	std::wstring type() override;
 };

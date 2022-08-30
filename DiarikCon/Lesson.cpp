@@ -104,3 +104,8 @@ short Lesson::mark()
 {
 	return _mark;
 }
+
+std::wstring Lesson::type()
+{
+	return L"Lesson";
+}
