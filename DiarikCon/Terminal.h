@@ -6,16 +6,33 @@
 class Terminal
 {
 	bool _is_terminal = false;
+	bool _is_quit = false;
 	std::list<WorkWeek> _panel_list;
 	std::list<WorkWeek>::iterator _cur_panel;
+
+	Week _input_dayweek(bool &inp_);
+	bool warning();
+
+	bool _CPshow();
+	bool _CPadd();
+	bool _CPdelete();
+	bool _CPselect();
+	bool _CPsave();
+	bool _CPload();
 
 	bool _CTshow();
 	bool _CTadd();
 	bool _CTdelete();
+	bool _CTback();
+	bool _CThw();
+	bool _CTdone();
+	bool _CTmark();
+	void _Chelp();
 public:
 	std::wstring cmd;
 	void input();
 	bool is_terminal();
+	bool is_quit();
 };
 
 struct Token
@@ -24,22 +41,25 @@ struct Token
 	std::wstring regex;
 };
 
-std::list<Token> list_terminal_token = {
+static std::list<Token> list_terminal_token = {
 	{L"SHOW",L"show"},
-	{L"ADD",L"add"},
+	{L"ADD",L"create"},
 	{L"DELETE",L"delete"},
 	{L"HOMEWORK_SET",L"homework"},
-	{L"CHANGE",L"change"},
+	{L"DONE_SET",L"done"},
+	{L"MARK_SET",L"mark"},
 	{L"QUIT",L"quit"},
 	{L"BACK",L"back"},
+	{L"HELP",L"help"},
 };
 
-std::list<Token> list_panel_token = {
+static std::list<Token> list_panel_token = {
 	{L"SHOW",L"show"},
-	{L"ADD",L"add"},
+	{L"ADD",L"create"},
 	{L"DELETE",L"delete"},
 	{L"SELECT",L"select"},
-	{L"CHANGE",L"change"},
 	{L"QUIT",L"quit"},
-	{L"BACK",L"back"},
+	{L"SAVE",L"save"},
+	{L"LOAD",L"load"},
+	{L"HELP",L"help"},
 };

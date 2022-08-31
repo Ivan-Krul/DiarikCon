@@ -112,7 +112,8 @@ void WorkWeek::load(std::wstring dir_)
 			std::getline(ifs, buf);
 			mark = std::stoi(buf);
 
-			_week[i].append(Lesson(name, hw));
+			_week[i].append(Lesson(name));
+			_week[i][j].mark_homework(hw);
 			if(is_done) _week[i][j].mark_done();
 			_week[i][j].mark_mark(mark);
 		}

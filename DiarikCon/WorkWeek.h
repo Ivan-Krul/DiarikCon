@@ -19,5 +19,5 @@ public:
 	std::wstring wform();
 	void load(std::wstring dir_);
 	void save(std::wstring dir_);
-	std::wstring type() override;
+	std::wstring type();
 };

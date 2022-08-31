@@ -115,6 +115,17 @@ void WorkDay::save(std::wstring dir_)
 
 void WorkDay::delet(std::wstring name_)
 {
+	for(int i = 0; i < _lessons.size(); i++)
+	{
+		if(_lessons[i].name() == name_)
+		{
+			_lessons.erase(_lessons.begin() + i);
+			return;
+		}
+	}
+	std::wcerr << "ERROR: " << __FUNCTION__ << "(): Element isn't found: " << name_ << "\n\a";
+	std::wcerr << "ERROR: " << "For users: try to type name of existance name\n\a";
+	std::wcin.get();
 }
 
 std::wstring WorkDay::type()
