@@ -92,6 +92,7 @@ void WorkWeek::load(std::wstring dir_)
 		ifs.close();
 		return;
 	}
+	std::getline(ifs, _name);
 	for(int i = 0; i < 7; i++)
 	{
 		std::wstring buf;
@@ -140,6 +141,7 @@ void WorkWeek::save(std::wstring dir_)
 		ofs.close();
 		return;
 	}
+	ofs << _name<<'\n';
 	for(int i = 0; i < 7; i++)
 	{
 		switch((Week)i)
