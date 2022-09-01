@@ -91,7 +91,7 @@ bool Terminal::_CPsave()
 	system("dir");
 	std::wstring namedir;
 	std::wcout << "File name to save: ";
-	std::getline(std::wcin, namedir);
+	std::wcin >> namedir;
 	_panel_list.rbegin()->save(namedir);
 	return true;
 }
@@ -100,7 +100,7 @@ bool Terminal::_CPload()
 	system("dir");
 	std::wstring namedir;
 	std::wcout << "File name to load: ";
-	std::getline(std::wcin, namedir);
+	std::wcin >> namedir;
 	_panel_list.push_back(WorkWeek());
 	_panel_list.rbegin()->load(namedir);
 	return true;
