@@ -19,6 +19,7 @@ class Terminal
 	bool _CPselect();
 	bool _CPsave();
 	bool _CPload();
+	bool _CPrename();
 
 	bool _CTshow();
 	bool _CTadd();
@@ -28,6 +29,7 @@ class Terminal
 	bool _CTdone();
 	bool _CTmark();
 	void _Chelp();
+	bool _CTrename();
 public:
 	std::wstring cmd;
 	void input();
@@ -51,6 +53,7 @@ static std::list<Token> list_terminal_token = {
 	{L"QUIT",L"quit"},
 	{L"BACK",L"back"},
 	{L"HELP",L"help"},
+	{L"RENAME",L"rename"},
 };
 
 static std::list<Token> list_panel_token = {
@@ -62,4 +65,5 @@ static std::list<Token> list_panel_token = {
 	{L"SAVE",L"save"},
 	{L"LOAD",L"load"},
 	{L"HELP",L"help"},
+	{L"RENAME",L"rename"},
 };

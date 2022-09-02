@@ -14,6 +14,7 @@ public:
 	void mark_homework(std::wstring hw_);
 	void mark_done();
 	void mark_mark(short mark_);
+	void mark_name(std::wstring name_);
 	std::wstring name();
 	std::wstring hw();
 	bool is_done();

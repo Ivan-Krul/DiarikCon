@@ -31,6 +31,11 @@ std::wstring Lesson::hw()
 	return _hw;
 }
 
+void Lesson::mark_name(std::wstring name_)
+{
+	_name = name_;
+}
+
 bool Lesson::is_done()
 {
 	return _is_done;

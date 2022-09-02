@@ -139,6 +139,31 @@ bool Terminal::_CPselect()
 	return true;
 }
 
+bool Terminal::_CPrename()
+{
+	_CPshow();
+	int what;
+	std::wstring renamed;
+	std::wcout << "Number: ";
+	std::wcin >> what;
+
+	auto iter = _panel_list.begin();
+	for(iter; iter != _panel_list.end() && what != 0; (what--, iter++));
+	if(iter == _panel_list.end())
+	{
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): index of panel isn't found: " << what << "\n";
+		std::wcerr << "ERROR: For users: try to type number on start of the string, when it show for you\n\a";
+		std::wcin.get();
+		return false;
+	}
+
+	std::wcout << "New name: ";
+	std::wcin >> renamed;
+	iter->_name = renamed;
+
+	return true;
+}
+
 bool Terminal::_CTdelete()
 {
 	bool inp = false;
@@ -230,6 +255,32 @@ bool Terminal::_CTmark()
 	return false;
 }
 
+bool Terminal::_CTrename()
+{
+	bool inp = false;
+	Week wek = _input_dayweek(inp);
+	if(inp) return false;
+	std::wstring name;
+	std::wcout << "Name for renaming: ";
+	std::wcin >> name;
+	for(int i = 0; i < (*_cur_panel)[wek].size(); i++)
+	{
+		if((*_cur_panel)[wek][i].name() == name)
+		{
+			std::wstring renamed;
+
+			std::wcout << "New name: ";
+			std::wcin >> renamed;
+			(*_cur_panel)[wek][i].mark_name(renamed);
+			return true;
+		}
+	}
+	std::wcerr << "ERROR: " << __FUNCTION__ << "(): name isn't found: " << name << "\n";
+	std::wcerr << "ERROR: For users: try to type correctly\n\a";
+	std::wcin.get();
+	return false;
+}
+
 void Terminal::input()
 {
 	std::wcout << (_is_terminal? std::wstring(L"Panel ")+(*_cur_panel)._name + L": " : std::wstring(L"Panel Chooser: "));
@@ -250,6 +301,7 @@ void Terminal::input()
 			if(token.name == L"SAVE" && !_is_terminal) _CPsave();
 			if(token.name == L"LOAD" && !_is_terminal) _CPload();
 			if(token.name == L"HELP") _Chelp();
+			if(token.name == L"RENAME") _is_terminal ? _CTrename() : _CPrename();
 			return;
 		}
 	}
