@@ -3,7 +3,7 @@
 Week Terminal::_input_dayweek(bool &inp_)
 {
 	std::wstring dayweek;
-	std::wcout << "\tDay of week: ";
+	if(!_is_cmd) std::wcout << "\tDay of week: ";
 	std::wcin >> dayweek;
 	Week wek;
 	if(dayweek == L"monday") wek = Week::monday;
@@ -26,12 +26,11 @@ Week Terminal::_input_dayweek(bool &inp_)
 
 bool Terminal::warning()
 {
+	static std::wstring str_accept = L"accept";
 	std::wstring type;
-	std::wcout << "You are trying to quit, are you accepting fact about losing work? [accept/(any else)]: ";
+	std::wcout << "Are you "<<str_accept << " with losing work [" << str_accept << "/(any else)]: ";
 	std::wcin >> type;
-	if(type == L"accept")
-		_is_quit = true;
-	return true;
+	return type == str_accept;
 }
 
 void Terminal::_Chelp()
@@ -62,7 +61,7 @@ bool Terminal::_CTshow()
 bool Terminal::_CPdelete()
 {
 	std::wstring name;
-	std::wcout << "\tName of panel: ";
+	if(!_is_cmd) std::wcout << "\tName of panel: ";
 	std::wcin >> name;
 	for(auto iter = _panel_list.begin();iter != _panel_list.end();iter++)
 	{
@@ -80,7 +79,7 @@ bool Terminal::_CPdelete()
 bool Terminal::_CPadd()
 {
 	std::wstring name;
-	std::wcout << "\tName of panel: ";
+	if(!_is_cmd) std::wcout << "\tName of panel: ";
 	std::wcin >> name;
 	_panel_list.push_back(WorkWeek());
 	(--_panel_list.end())->_name = name;
@@ -88,18 +87,18 @@ bool Terminal::_CPadd()
 }
 bool Terminal::_CPsave()
 {
-	system("dir");
+	if(!_is_cmd) system("dir");
 	std::wstring namedir;
-	std::wcout << "File name to save: ";
+	if(!_is_cmd) std::wcout << "File name to save: ";
 	std::wcin >> namedir;
 	_panel_list.rbegin()->save(namedir);
 	return true;
 }
 bool Terminal::_CPload()
 {
-	system("dir");
+	if(!_is_cmd) system("dir");
 	std::wstring namedir;
-	std::wcout << "File name to load: ";
+	if(!_is_cmd) std::wcout << "File name to load: ";
 	std::wcin >> namedir;
 	_panel_list.push_back(WorkWeek());
 	_panel_list.rbegin()->load(namedir);
@@ -113,7 +112,7 @@ bool Terminal::_CTadd()
 	bool inp = false;
 	Week wek = _input_dayweek(inp);
 	if(inp) return false;
-	std::wcout << "\tName of lesson: ";
+	if(!_is_cmd) std::wcout << "\tName of lesson: ";
 	std::wcin >> name;
 	(*_cur_panel)[wek].append(Lesson(name));
 	return true;
@@ -122,8 +121,8 @@ bool Terminal::_CTadd()
 bool Terminal::_CPselect()
 {
 	int choose;
-	_CPshow();
-	std::wcout << "Number: ";
+	if(!_is_cmd) _CPshow();
+	if(!_is_cmd) std::wcout << "Number: ";
 	std::wcin >> choose;
 	auto iter = _panel_list.begin();
 	for(iter; iter != _panel_list.end() && choose != 0; (choose--, iter++));
@@ -144,7 +143,7 @@ bool Terminal::_CPrename()
 	_CPshow();
 	int what;
 	std::wstring renamed;
-	std::wcout << "Number: ";
+	if(!_is_cmd) std::wcout << "\tNumber: ";
 	std::wcin >> what;
 
 	auto iter = _panel_list.begin();
@@ -157,7 +156,7 @@ bool Terminal::_CPrename()
 		return false;
 	}
 
-	std::wcout << "New name: ";
+	if(!_is_cmd) std::wcout << "New name: ";
 	std::wcin >> renamed;
 	iter->_name = renamed;
 
@@ -169,7 +168,7 @@ bool Terminal::_CTdelete()
 	bool inp = false;
 	Week wek = _input_dayweek(inp);
 	if(inp) return false;
-	std::wcout << "\tName of lesson: ";
+	if(!_is_cmd) std::wcout << "\tName of lesson: ";
 	std::wstring name;
 	std::wcin >> name;
 
@@ -190,14 +189,14 @@ bool Terminal::_CThw()
 	bool inp = false;
 	Week wek = _input_dayweek(inp);
 	if(inp) return false;
-	std::wcout << "\tName of lesson: ";
+	if(!_is_cmd) std::wcout << "\tName of lesson: ";
 	std::wcin >> name;
 	for(int i = 0; i < (*_cur_panel)[wek].size(); i++)
 	{
 		if((*_cur_panel)[wek][i].name() == name)
 		{
 			std::wstring hw;
-			std::wcout << "\tHomework: ";
+			if(!_is_cmd) std::wcout << "\tHomework: ";
 			std::wcin >> hw;
 			(*_cur_panel)[wek][i].mark_homework(hw);
 			return true;
@@ -215,7 +214,7 @@ bool Terminal::_CTdone()
 	bool inp = false;
 	Week wek = _input_dayweek(inp);
 	if(inp) return false;
-	std::wcout << "\tName of lesson: ";
+	if(!_is_cmd) std::wcout << "\tName of lesson: ";
 	std::wcin >> name;
 	for(int i = 0; i < (*_cur_panel)[wek].size(); i++)
 	{
@@ -233,11 +232,11 @@ bool Terminal::_CTdone()
 
 bool Terminal::_CTmark() 
 {
-	std::wstring name, dayweek;
+	std::wstring name;
 	bool inp = false;
 	Week wek = _input_dayweek(inp);
 	if(inp) return false;
-	std::wcout << "\tName of lesson: ";
+	if(!_is_cmd) std::wcout << "\tName of lesson: ";
 	std::wcin >> name;
 	for(int i = 0; i < (*_cur_panel)[wek].size(); i++)
 	{
@@ -254,6 +253,54 @@ bool Terminal::_CTmark()
 	std::wcin.get();
 	return false;
 }
+bool Terminal::_CPclear()
+{
+	if(!warning()) return true;
+	_panel_list.clear();
+	return true;
+}
+bool Terminal::_CTclear()
+{
+	if(!warning()) return true;
+	for(int i = 0; i < 7; i++)
+		for(int j = 0; j < (*_cur_panel)[(Week)i].size(); j++)
+			(*_cur_panel)[(Week)i].delet((*_cur_panel)[(Week)i][0].name());
+	return true;
+}
+
+bool Terminal::_Ccmd()
+{
+	_is_cmd = true;
+	std::wcin >> cmd;
+	for(auto &token : (_is_terminal ? list_terminal_token : list_panel_token))
+	{
+		if(token.regex == cmd)
+		{
+			if(token.name == L"SHOW") (_is_terminal ? _CTshow() : _CPshow());
+			if(token.name == L"QUIT") if(warning()) _is_quit = true;
+			if(token.name == L"ADD") (_is_terminal ? _CTadd() : _CPadd());
+			if(token.name == L"DELETE") (_is_terminal ? _CTdelete() : _CPdelete());
+			if(token.name == L"SELECT" && !_is_terminal) _CPselect();
+			if(token.name == L"BACK" && _is_terminal) _CTback();
+			if(token.name == L"SET_HOMEWORK" && _is_terminal) _CThw();
+			if(token.name == L"SET_DONE" && _is_terminal) _CTdone();
+			if(token.name == L"SET_MARK" && _is_terminal) _CTmark();
+			if(token.name == L"SAVE" && !_is_terminal) _CPsave();
+			if(token.name == L"LOAD" && !_is_terminal) _CPload();
+			if(token.name == L"HELP") _Chelp();
+			if(token.name == L"RENAME") _is_terminal ? _CTrename() : _CPrename();
+			if(token.name == L"CLEAR") _is_terminal ? _CTclear() : _CPclear();
+			if(token.name == L"CMD") _Ccmd();
+			_is_cmd = false;
+			return true;
+		}
+	}
+	std::wcerr << "ERROR: " << __FUNCTION__ << "(): token to " << cmd << " isn't detected\n";
+	std::wcerr << "ERROR: For users: this command wasn't found in list of accessed commands, try type correctly\n\a";
+	std::wcin.get();
+	_is_cmd = false;
+	return false;
+}
 
 bool Terminal::_CTrename()
 {
@@ -261,7 +308,7 @@ bool Terminal::_CTrename()
 	Week wek = _input_dayweek(inp);
 	if(inp) return false;
 	std::wstring name;
-	std::wcout << "Name for renaming: ";
+	if(!_is_cmd) std::wcout << "\tName for renaming: ";
 	std::wcin >> name;
 	for(int i = 0; i < (*_cur_panel)[wek].size(); i++)
 	{
@@ -269,7 +316,7 @@ bool Terminal::_CTrename()
 		{
 			std::wstring renamed;
 
-			std::wcout << "New name: ";
+			if(!_is_cmd) std::wcout << "\tNew name: ";
 			std::wcin >> renamed;
 			(*_cur_panel)[wek][i].mark_name(renamed);
 			return true;
@@ -290,7 +337,7 @@ void Terminal::input()
 		if(token.regex == cmd)
 		{
 			if(token.name == L"SHOW") (_is_terminal ? _CTshow() : _CPshow());
-			if(token.name == L"QUIT") warning();
+			if(token.name == L"QUIT") if(warning()) _is_quit = true;
 			if(token.name == L"ADD") (_is_terminal ? _CTadd() : _CPadd());
 			if(token.name == L"DELETE") (_is_terminal ? _CTdelete() : _CPdelete());
 			if(token.name == L"SELECT" && !_is_terminal) _CPselect();
@@ -302,6 +349,8 @@ void Terminal::input()
 			if(token.name == L"LOAD" && !_is_terminal) _CPload();
 			if(token.name == L"HELP") _Chelp();
 			if(token.name == L"RENAME") _is_terminal ? _CTrename() : _CPrename();
+			if(token.name == L"CLEAR") _is_terminal ? _CTclear() : _CPclear();
+			if(token.name == L"CMD") _Ccmd();
 			return;
 		}
 	}

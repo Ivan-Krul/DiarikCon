@@ -7,6 +7,7 @@ class Terminal
 {
 	bool _is_terminal = false;
 	bool _is_quit = false;
+	bool _is_cmd = false;
 	std::list<WorkWeek> _panel_list;
 	std::list<WorkWeek>::iterator _cur_panel;
 
@@ -20,6 +21,9 @@ class Terminal
 	bool _CPsave();
 	bool _CPload();
 	bool _CPrename();
+	bool _CPclear();
+
+	bool _Ccmd();
 
 	bool _CTshow();
 	bool _CTadd();
@@ -30,6 +34,7 @@ class Terminal
 	bool _CTmark();
 	void _Chelp();
 	bool _CTrename();
+	bool _CTclear();
 public:
 	std::wstring cmd;
 	void input();
@@ -54,6 +59,8 @@ static std::list<Token> list_terminal_token = {
 	{L"BACK",L"back"},
 	{L"HELP",L"help"},
 	{L"RENAME",L"rename"},
+	{L"CLEAR",L"clear"},
+	{L"CMD",L"cmd"},
 };
 
 static std::list<Token> list_panel_token = {
@@ -66,4 +73,6 @@ static std::list<Token> list_panel_token = {
 	{L"LOAD",L"load"},
 	{L"HELP",L"help"},
 	{L"RENAME",L"rename"},
+	{L"CLEAR",L"clear"},
+	{L"CMD",L"cmd"},
 };
