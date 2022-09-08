@@ -18,7 +18,7 @@ class Terminal
 	bool _CPadd();
 	bool _CPdelete();
 	bool _CPselect();
-	bool _CPsave();
+	bool _CTsave();
 	bool _CPload();
 	bool _CPrename();
 	bool _CPclear();
@@ -61,6 +61,7 @@ static std::list<Token> list_terminal_token = {
 	{L"RENAME",L"rename"},
 	{L"CLEAR",L"clear"},
 	{L"CMD",L"cmd"},
+	{L"SAVE",L"save"},
 };
 
 static std::list<Token> list_panel_token = {
@@ -69,7 +70,6 @@ static std::list<Token> list_panel_token = {
 	{L"DELETE",L"delete"},
 	{L"SELECT",L"select"},
 	{L"QUIT",L"quit"},
-	{L"SAVE",L"save"},
 	{L"LOAD",L"load"},
 	{L"HELP",L"help"},
 	{L"RENAME",L"rename"},

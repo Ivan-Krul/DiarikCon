@@ -85,13 +85,13 @@ bool Terminal::_CPadd()
 	(--_panel_list.end())->_name = name;
 	return true;
 }
-bool Terminal::_CPsave()
+bool Terminal::_CTsave()
 {
 	if(!_is_cmd) system("dir");
 	std::wstring namedir;
 	if(!_is_cmd) std::wcout << "File name to save: ";
 	std::wcin >> namedir;
-	_panel_list.rbegin()->save(namedir);
+	(*_cur_panel).save(namedir);
 	return true;
 }
 bool Terminal::_CPload()
@@ -156,7 +156,7 @@ bool Terminal::_CPrename()
 		return false;
 	}
 
-	if(!_is_cmd) std::wcout << "New name: ";
+	if(!_is_cmd) std::wcout << "\tNew name: ";
 	std::wcin >> renamed;
 	iter->_name = renamed;
 
@@ -243,6 +243,7 @@ bool Terminal::_CTmark()
 		if((*_cur_panel)[wek][i].name() == name)
 		{
 			short hw;
+			if(!_is_cmd) std::wcout << "\tMark: ";
 			std::wcin >> hw;
 			(*_cur_panel)[wek][i].mark_mark(hw);
 			return true;
@@ -285,7 +286,7 @@ bool Terminal::_Ccmd()
 			if(token.name == L"SET_HOMEWORK" && _is_terminal) _CThw();
 			if(token.name == L"SET_DONE" && _is_terminal) _CTdone();
 			if(token.name == L"SET_MARK" && _is_terminal) _CTmark();
-			if(token.name == L"SAVE" && !_is_terminal) _CPsave();
+			if(token.name == L"SAVE" && _is_terminal) _CTsave();
 			if(token.name == L"LOAD" && !_is_terminal) _CPload();
 			if(token.name == L"HELP") _Chelp();
 			if(token.name == L"RENAME") _is_terminal ? _CTrename() : _CPrename();
@@ -345,7 +346,7 @@ void Terminal::input()
 			if(token.name == L"SET_HOMEWORK" && _is_terminal) _CThw();
 			if(token.name == L"SET_DONE" && _is_terminal) _CTdone();
 			if(token.name == L"SET_MARK" && _is_terminal) _CTmark();
-			if(token.name == L"SAVE" && !_is_terminal) _CPsave();
+			if(token.name == L"SAVE" && !_is_terminal) _CTsave();
 			if(token.name == L"LOAD" && !_is_terminal) _CPload();
 			if(token.name == L"HELP") _Chelp();
 			if(token.name == L"RENAME") _is_terminal ? _CTrename() : _CPrename();
