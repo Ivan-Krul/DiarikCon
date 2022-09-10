@@ -299,6 +299,8 @@ bool Terminal::_Ccmd()
 			if(token.name == L"RENAME") _is_terminal ? _CTrename() : _CPrename();
 			if(token.name == L"CLEAR") _is_terminal ? _CTclear() : _CPclear();
 			if(token.name == L"CMD") _Ccmd();
+			if(token.name == L"CONFIG") _Cconfig();
+			if(token.name == L"CENTRIC_ELEMENTS" && _is_config) _CCcentric_elements();
 			_is_cmd = false;
 			return true;
 		}
@@ -318,18 +320,35 @@ bool Terminal::_Cconfig()
 
 bool Terminal::_CCcentric_elements()
 {
-	return true;
+	try
+	{
+		int param = std::any_cast<int>(cfg.get("settings", "center_elements"));
+		param = (param == 0 ? 1 : 0);
+		return true;
+	}
+	catch(const std::exception &)
+	{
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): catched exception\n\a";
+		std::wcin.get();
+		return false;
+	}
 }
 bool Terminal::_CCallways_warning()
 {
+	int param = std::any_cast<int>(cfg.get("settings", "allways_warning"));
+	param = (param == 0 ? 1 : 0);
 	return true;
 }
 bool Terminal::_CCauto_save()
 {
+	int param = std::any_cast<int>(cfg.get("settings", "autosave"));
+	param = (param == 0 ? 1 : 0);
 	return true;
 }
 bool Terminal::_CChide_additional_text()
 {
+	int param = std::any_cast<int>(cfg.get("settings", "hide_additional_text"));
+	param = (param == 0 ? 1 : 0);
 	return true;
 }
 bool Terminal::_CCback()
@@ -368,7 +387,7 @@ void Terminal::input()
 {
 	std::wcout << _showMode()<<": ";
 	std::wcin >> cmd;
-	for(auto &token : (_is_terminal?list_terminal_token:list_panel_token))
+	for(auto &token : _is_config ? list_config_token : (_is_terminal ? list_terminal_token : list_panel_token))
 	{
 		if(token.regex == cmd)
 		{
@@ -377,7 +396,7 @@ void Terminal::input()
 			if(token.name == L"ADD") (_is_terminal ? _CTadd() : _CPadd());
 			if(token.name == L"DELETE") (_is_terminal ? _CTdelete() : _CPdelete());
 			if(token.name == L"SELECT" && !_is_terminal) _CPselect();
-			if(token.name == L"BACK" && _is_terminal) _CTback();
+			if(token.name == L"BACK") (_is_config ? _CCback() : _is_terminal ? _CTback() : 0);
 			if(token.name == L"SET_HOMEWORK" && _is_terminal) _CThw();
 			if(token.name == L"SET_DONE" && _is_terminal) _CTdone();
 			if(token.name == L"SET_MARK" && _is_terminal) _CTmark();
@@ -387,6 +406,8 @@ void Terminal::input()
 			if(token.name == L"RENAME") _is_terminal ? _CTrename() : _CPrename();
 			if(token.name == L"CLEAR") _is_terminal ? _CTclear() : _CPclear();
 			if(token.name == L"CMD") _Ccmd();
+			if(token.name == L"CONFIG") _Cconfig();
+			if(token.name == L"CENTRIC_ELEMENTS" && _is_config) _CCcentric_elements();
 			return;
 		}
 	}

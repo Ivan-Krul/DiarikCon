@@ -1,6 +1,6 @@
 #include "Config.h"
 
-void Config::_readnumber(std::string line_, std::string name_)
+void Config::_readnumber(std::string line_, std::string parent_, std::string name_)
 {
 	bool is_float = false;
 	float _float = 0;
@@ -32,7 +32,7 @@ void Config::_readnumber(std::string line_, std::string name_)
 		any = std::make_any<float>(_float);
 	else
 		any = std::make_any<int>(_int);
-	_var.insert({name_,any});
+	_var.insert({ {parent_,name_},any });
 }
 
 void Config::_clearcomments(std::string &line_)
@@ -49,7 +49,7 @@ void Config::_clearcomments(std::string &line_)
 std::string Config::_readgroup(std::string line_)
 {
 	int sizegroup = 0;
-	while(line_[sizegroup + 1] == ']')
+	while(line_[sizegroup + 1] != ']')
 		sizegroup++;
 	return line_.substr(1, sizegroup);
 }
@@ -58,37 +58,38 @@ std::string Config::_readnamevariable(std::string &line_)
 {
 	std::string str;
 	int sizename = 0;
-	while(line_[sizename] == ' ' || line_[sizename] == '=')
-		sizename++;
-	str = line_.substr(0, sizename - 1);
-	line_.erase(0, sizename - 1);
+	for(sizename;sizename < line_.size();sizename++)
+		if(line_[sizename] == ' ' || line_[sizename] == '=')
+			break;
+	str = line_.substr(0, sizename);
+	line_ = line_.substr(sizename);
 	return str;
 }
 
-void Config::_readvalue(std::string line_, std::string name_)
+void Config::_readvalue(std::string line_, std::string parent_, std::string name_)
 {
 	int end_of_text = 0;
 	if(line_[0] == '"') // is text with spaces?
 	{
 		end_of_text++;
-		while(!line_.empty())
+		while(end_of_text < line_.empty())
 		{
 			if(line_[end_of_text] == '"')
 				break;
 			end_of_text++;
 		}
 		std::any any = std::make_any<std::string>(line_.substr(1, end_of_text - 1));
-		_var.insert({ name_,any });
+		_var.insert({ { parent_, name_ }, any });
 		return;
 	}
-	while(!line_.empty())
+	while(end_of_text < line_.empty())
 	{
 		if(line_[end_of_text] == ' ')
 			break;
 		end_of_text++;
 	}
 	std::any any = std::make_any<std::string>(line_.substr(0, end_of_text - 1));
-	_var.insert({ name_,any });
+	_var.insert({ {parent_,name_},any });
 }
 
 Config::Config(std::wstring file_)
@@ -101,7 +102,7 @@ Config::Config(std::wstring file_)
 	std::string group = "NULL";
 	std::string variable;
 	std::string line;
-	while(fin.eof())
+	while(!fin.eof())
 	{
 		std::getline(fin, line);
 
@@ -120,20 +121,22 @@ Config::Config(std::wstring file_)
 		variable = _readnamevariable(line); // we have a deal with variable and value
 		// we're got name of variable, then we need extract value
 		while(line[0] == ' ' || line[0] == '=')
-			line.erase();
+			line = line.substr(1);
 		if(isnumber(line[0])) // ok, then is it number?
 		{
-			_readnumber(line, group + "::" + variable);
+			_readnumber(line, group ,variable);
 			continue;
 		}
 		// ok, then it's text, just copy it
-		_readvalue(line, group + "::" + variable);
+		_readvalue(line, group ,variable);
 	}
+
 }
 
-std::any &Config::operator[](std::string index_)
+std::any &Config::get(std::string parent_, std::string index_)
 {
-	return _var.find(index_)->second;
+	std::pair p = { parent_,index_ };
+	return _var.find(p)->second;
 }
 
 Config::~Config()
@@ -145,14 +148,12 @@ Config::~Config()
 	std::string prev_group = "NULL";
 	for(auto &iter : _var)
 	{
-		int i = 0;
-		for(i = 0; iter.first[i] != ':'; i++);
-		if(iter.first.substr(0, i - 1) != prev_group)
+		if(prev_group != iter.first.first)
 		{
-			prev_group = iter.first.substr(0, i - 1);
-			fout << '[' << prev_group << "]\n";
+			prev_group = iter.first.first;
+			fout << "[" << prev_group << "]\n";
 		}
-		fout << iter.first.substr(i + 2) << " = ";
+		fout << iter.first.second << " = ";
 		if(iter.second.type().name() == "int")
 			fout << std::any_cast<int>(iter.second);
 		else if(iter.second.type().name() == "float")
