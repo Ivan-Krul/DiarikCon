@@ -33,6 +33,15 @@ bool Terminal::warning()
 	return type == str_accept;
 }
 
+std::wstring Terminal::_showMode()
+{
+	if(_is_config)
+		return L"Config";
+	if(_is_terminal)
+		return L"Panel " + (*_cur_panel)._name;
+	return L"Panel Chooser";
+}
+
 void Terminal::_Chelp()
 {
 	for(auto &token : (_is_terminal ? list_terminal_token : list_panel_token))
@@ -60,21 +69,21 @@ bool Terminal::_CTshow()
 }
 bool Terminal::_CPdelete()
 {
-	std::wstring name;
-	if(!_is_cmd) std::wcout << "\tName of panel: ";
-	std::wcin >> name;
-	for(auto iter = _panel_list.begin();iter != _panel_list.end();iter++)
+	int choose;
+	if(!_is_cmd) _CPshow();
+	if(!_is_cmd) std::wcout << "Number: ";
+	std::wcin >> choose;
+	auto iter = _panel_list.begin();
+	for(iter; iter != _panel_list.end() && choose != 0; (choose--, iter++));
+	if(iter == _panel_list.end())
 	{
-		if((*iter)._name == name)
-		{
-			_panel_list.erase(iter);
-			return true;
-		}
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): index of panel isn't found: " << choose << "\n";
+		std::wcerr << "ERROR: For users: try to type number on start of the string, when it show for you\n\a";
+		std::wcin.get();
+		return false;
 	}
-	std::wcerr << "ERROR: " << __FUNCTION__ << "(): name isn't detected: " << name << "\n";
-	std::wcerr << "ERROR: For users: try to type name, what exist\n\a";
-	std::wcin.get();
-	return false;
+	_panel_list.erase(iter);
+	return true;
 }
 bool Terminal::_CPadd()
 {
@@ -140,22 +149,20 @@ bool Terminal::_CPselect()
 
 bool Terminal::_CPrename()
 {
-	_CPshow();
-	int what;
-	std::wstring renamed;
-	if(!_is_cmd) std::wcout << "\tNumber: ";
-	std::wcin >> what;
-
+	int choose;
+	if(!_is_cmd) _CPshow();
+	if(!_is_cmd) std::wcout << "Number: ";
+	std::wcin >> choose;
 	auto iter = _panel_list.begin();
-	for(iter; iter != _panel_list.end() && what != 0; (what--, iter++));
+	for(iter; iter != _panel_list.end() && choose != 0; (choose--, iter++));
 	if(iter == _panel_list.end())
 	{
-		std::wcerr << "ERROR: " << __FUNCTION__ << "(): index of panel isn't found: " << what << "\n";
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): index of panel isn't found: " << choose << "\n";
 		std::wcerr << "ERROR: For users: try to type number on start of the string, when it show for you\n\a";
 		std::wcin.get();
 		return false;
 	}
-
+	std::wstring renamed;
 	if(!_is_cmd) std::wcout << "\tNew name: ";
 	std::wcin >> renamed;
 	iter->_name = renamed;
@@ -273,7 +280,7 @@ bool Terminal::_Ccmd()
 {
 	_is_cmd = true;
 	std::wcin >> cmd;
-	for(auto &token : (_is_terminal ? list_terminal_token : list_panel_token))
+	for(auto &token : _is_config ? list_config_token : (_is_terminal ? list_terminal_token : list_panel_token))
 	{
 		if(token.regex == cmd)
 		{
@@ -301,6 +308,34 @@ bool Terminal::_Ccmd()
 	std::wcin.get();
 	_is_cmd = false;
 	return false;
+}
+
+bool Terminal::_Cconfig()
+{
+	_is_config = true;
+	return true;
+}
+
+bool Terminal::_CCcentric_elements()
+{
+	return true;
+}
+bool Terminal::_CCallways_warning()
+{
+	return true;
+}
+bool Terminal::_CCauto_save()
+{
+	return true;
+}
+bool Terminal::_CChide_additional_text()
+{
+	return true;
+}
+bool Terminal::_CCback()
+{
+	_is_config = false;
+	return true;
 }
 
 bool Terminal::_CTrename()
@@ -331,7 +366,7 @@ bool Terminal::_CTrename()
 
 void Terminal::input()
 {
-	std::wcout << (_is_terminal? std::wstring(L"Panel ")+(*_cur_panel)._name + L": " : std::wstring(L"Panel Chooser: "));
+	std::wcout << _showMode()<<": ";
 	std::wcin >> cmd;
 	for(auto &token : (_is_terminal?list_terminal_token:list_panel_token))
 	{
@@ -346,7 +381,7 @@ void Terminal::input()
 			if(token.name == L"SET_HOMEWORK" && _is_terminal) _CThw();
 			if(token.name == L"SET_DONE" && _is_terminal) _CTdone();
 			if(token.name == L"SET_MARK" && _is_terminal) _CTmark();
-			if(token.name == L"SAVE" && !_is_terminal) _CTsave();
+			if(token.name == L"SAVE" && _is_terminal) _CTsave();
 			if(token.name == L"LOAD" && !_is_terminal) _CPload();
 			if(token.name == L"HELP") _Chelp();
 			if(token.name == L"RENAME") _is_terminal ? _CTrename() : _CPrename();

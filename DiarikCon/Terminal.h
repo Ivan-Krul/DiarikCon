@@ -3,13 +3,20 @@
 #include <conio.h>
 #include <list>
 #include "WorkWeek.h"
+#include "Config.h"
 class Terminal
 {
 	bool _is_terminal = false;
+	bool _is_config = false;
 	bool _is_quit = false;
 	bool _is_cmd = false;
+	
 	std::list<WorkWeek> _panel_list;
 	std::list<WorkWeek>::iterator _cur_panel;
+
+	Config cfg;
+
+	std::wstring _showMode();
 
 	Week _input_dayweek(bool &inp_);
 	bool warning();
@@ -24,6 +31,12 @@ class Terminal
 	bool _CPclear();
 
 	bool _Ccmd();
+	bool _Cconfig();
+	bool _CCcentric_elements();
+	bool _CCallways_warning();
+	bool _CCauto_save();
+	bool _CChide_additional_text();
+	bool _CCback();
 
 	bool _CTshow();
 	bool _CTadd();
@@ -36,12 +49,13 @@ class Terminal
 	bool _CTrename();
 	bool _CTclear();
 public:
+	Terminal() : cfg(L"settings") {}
 	std::wstring cmd;
 	void input();
 	bool is_terminal();
 	bool is_quit();
+	~Terminal() { cfg.~Config(); }
 };
-
 struct Token
 {
 	std::wstring name;
@@ -62,6 +76,7 @@ static std::list<Token> list_terminal_token = {
 	{L"CLEAR",L"clear"},
 	{L"CMD",L"cmd"},
 	{L"SAVE",L"save"},
+	{L"CONFIG",L"config"},
 };
 
 static std::list<Token> list_panel_token = {
@@ -75,4 +90,13 @@ static std::list<Token> list_panel_token = {
 	{L"RENAME",L"rename"},
 	{L"CLEAR",L"clear"},
 	{L"CMD",L"cmd"},
+	{L"CONFIG",L"config"},
+};
+
+static std::list<Token> list_config_token = {
+	{L"CENTRIC_ELEMENTS",L"centric_elements"},
+	{L"ALLWAYS_WARNING",L"allways_warning"},
+	{L"AUTO_SAVE",L"auto_save"},
+	{L"HIDE_ADDITIONAL_TEXT",L"hide_additional_text"},
+	{L"BACK",L"back"},
 };
