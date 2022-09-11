@@ -33,6 +33,47 @@ bool Terminal::warning()
 	return type == str_accept;
 }
 
+void Terminal::_Cshow()
+{
+	std::cout << "autosave" << " = " << _is_autosave << "(" << (_is_autosave ? "true " : "false") << ")\n";
+	std::cout << "allways_warning" << " = " << _is_allways_warning << "(" << (_is_allways_warning ? "true " : "false") << ")\n";
+	std::cout << "center_elements" << " = " << _is_center_elements << "(" << (_is_center_elements ? "true " : "false") << ")\n";
+	std::cout << "hide_additional_text" << " = " << _is_hide_additional_text << "(" << (_is_hide_additional_text ? "true " : "false") << ")\n";
+}
+
+void Terminal::_load_cfg()
+{
+	std::ifstream fin;
+	fin.open("settings.cfg");
+	if(!fin.is_open())
+	{
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): file \"settings.cfg\" isn't found \n";
+		std::wcin.get();
+		return;
+	}
+	fin >> _is_autosave;
+	fin >> _is_allways_warning;
+	fin >> _is_center_elements;
+	fin >> _is_hide_additional_text;
+	fin.close();
+}
+void Terminal::_save_cfg()
+{
+	std::ofstream fout;
+	fout.open("settings.cfg");
+	if(!fout.is_open())
+	{
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): file \"settings.cfg\" isn't found \n";
+		std::wcin.get();
+		return;
+	}
+	fout << _is_autosave << ' ';
+	fout << _is_allways_warning << ' ';
+	fout << _is_center_elements << ' ';
+	fout << _is_hide_additional_text;
+	fout.close();
+}
+
 std::wstring Terminal::_showMode()
 {
 	if(_is_config)
@@ -184,6 +225,14 @@ bool Terminal::_CTdelete()
 	return true;
 }
 
+void Terminal::_CPabout()
+{
+	const static int mayor_version = 1;
+	const static int minor_version = 3;
+	std::wcout << "created @Ivan-Krul\n";
+	std::wcout << "version " << mayor_version << '.' << minor_version << '\n';
+}
+
 bool Terminal::_CTback()
 {
 	_is_terminal = false;
@@ -289,11 +338,11 @@ bool Terminal::_Ccmd()
 			if(token.name == L"ADD") (_is_terminal ? _CTadd() : _CPadd());
 			if(token.name == L"DELETE") (_is_terminal ? _CTdelete() : _CPdelete());
 			if(token.name == L"SELECT" && !_is_terminal) _CPselect();
-			if(token.name == L"BACK" && _is_terminal) _CTback();
+			if(token.name == L"BACK") (_is_config ? _CCback() : _is_terminal ? _CTback() : 0);
 			if(token.name == L"SET_HOMEWORK" && _is_terminal) _CThw();
 			if(token.name == L"SET_DONE" && _is_terminal) _CTdone();
 			if(token.name == L"SET_MARK" && _is_terminal) _CTmark();
-			if(token.name == L"SAVE" && _is_terminal) _CTsave();
+			if(token.name == L"SAVE") if(_is_config) _save_cfg(); else if(_is_terminal) _CTsave();
 			if(token.name == L"LOAD" && !_is_terminal) _CPload();
 			if(token.name == L"HELP") _Chelp();
 			if(token.name == L"RENAME") _is_terminal ? _CTrename() : _CPrename();
@@ -301,6 +350,10 @@ bool Terminal::_Ccmd()
 			if(token.name == L"CMD") _Ccmd();
 			if(token.name == L"CONFIG") _Cconfig();
 			if(token.name == L"CENTRIC_ELEMENTS" && _is_config) _CCcentric_elements();
+			if(token.name == L"ALLWAYS_WARNING" && _is_config) _CCallways_warning();
+			if(token.name == L"AUTO_SAVE" && _is_config) _CCauto_save();
+			if(token.name == L"HIDE_ADDITIONAL_TEXT" && _is_config) _CChide_additional_text();
+			if(token.name == L"ABOUT" && !_is_terminal) _CPabout();
 			_is_cmd = false;
 			return true;
 		}
@@ -320,39 +373,28 @@ bool Terminal::_Cconfig()
 
 bool Terminal::_CCcentric_elements()
 {
-	try
-	{
-		int param = std::any_cast<int>(cfg.get("settings", "center_elements"));
-		param = (param == 0 ? 1 : 0);
-		return true;
-	}
-	catch(const std::exception &)
-	{
-		std::wcerr << "ERROR: " << __FUNCTION__ << "(): catched exception\n\a";
-		std::wcin.get();
-		return false;
-	}
+	_is_center_elements = !_is_center_elements;
+	return true;
 }
 bool Terminal::_CCallways_warning()
 {
-	int param = std::any_cast<int>(cfg.get("settings", "allways_warning"));
-	param = (param == 0 ? 1 : 0);
+	_is_allways_warning = !_is_allways_warning;
 	return true;
 }
 bool Terminal::_CCauto_save()
 {
-	int param = std::any_cast<int>(cfg.get("settings", "autosave"));
-	param = (param == 0 ? 1 : 0);
+	_is_autosave = !_is_autosave;
 	return true;
 }
 bool Terminal::_CChide_additional_text()
 {
-	int param = std::any_cast<int>(cfg.get("settings", "hide_additional_text"));
-	param = (param == 0 ? 1 : 0);
+	_is_hide_additional_text = !_is_hide_additional_text;
 	return true;
 }
 bool Terminal::_CCback()
 {
+	if(!warning())
+		_save_cfg();
 	_is_config = false;
 	return true;
 }
@@ -385,6 +427,7 @@ bool Terminal::_CTrename()
 
 void Terminal::input()
 {
+	if(_is_config) _Cshow();
 	std::wcout << _showMode()<<": ";
 	std::wcin >> cmd;
 	for(auto &token : _is_config ? list_config_token : (_is_terminal ? list_terminal_token : list_panel_token))
@@ -400,7 +443,7 @@ void Terminal::input()
 			if(token.name == L"SET_HOMEWORK" && _is_terminal) _CThw();
 			if(token.name == L"SET_DONE" && _is_terminal) _CTdone();
 			if(token.name == L"SET_MARK" && _is_terminal) _CTmark();
-			if(token.name == L"SAVE" && _is_terminal) _CTsave();
+			if(token.name == L"SAVE") if(_is_config) _save_cfg(); else if(_is_terminal) _CTsave();
 			if(token.name == L"LOAD" && !_is_terminal) _CPload();
 			if(token.name == L"HELP") _Chelp();
 			if(token.name == L"RENAME") _is_terminal ? _CTrename() : _CPrename();
@@ -408,6 +451,10 @@ void Terminal::input()
 			if(token.name == L"CMD") _Ccmd();
 			if(token.name == L"CONFIG") _Cconfig();
 			if(token.name == L"CENTRIC_ELEMENTS" && _is_config) _CCcentric_elements();
+			if(token.name == L"ALLWAYS_WARNING" && _is_config) _CCallways_warning();
+			if(token.name == L"AUTO_SAVE" && _is_config) _CCauto_save();
+			if(token.name == L"HIDE_ADDITIONAL_TEXT" && _is_config) _CChide_additional_text();
+			if(token.name == L"ABOUT" && !_is_terminal) _CPabout();
 			return;
 		}
 	}
