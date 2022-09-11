@@ -15,7 +15,8 @@ Week Terminal::_input_dayweek(bool &inp_)
 	else if(dayweek == L"sunday") wek = Week::sunday;
 	else
 	{
-		std::wcerr << "ERROR: " << __FUNCTION__ << "(): name of day in week isn't common: " << dayweek << "\n";
+		if(!_is_hide_additional_text)
+			std::wcerr << "ERROR: " << __FUNCTION__ << "(): name of day in week isn't common: " << dayweek << "\n";
 		std::wcerr << "ERROR: For users: try to type correctly\n\a";
 		std::wcin.get();
 		inp_ = true;
@@ -26,6 +27,7 @@ Week Terminal::_input_dayweek(bool &inp_)
 
 bool Terminal::warning()
 {
+	if(!_is_allways_warning) return true;
 	static std::wstring str_accept = L"accept";
 	std::wstring type;
 	std::wcout << "Are you "<<str_accept << " with losing work [" << str_accept << "/(any else)]: ";
@@ -37,7 +39,6 @@ void Terminal::_Cshow()
 {
 	std::cout << "autosave" << " = " << _is_autosave << "(" << (_is_autosave ? "true " : "false") << ")\n";
 	std::cout << "allways_warning" << " = " << _is_allways_warning << "(" << (_is_allways_warning ? "true " : "false") << ")\n";
-	std::cout << "center_elements" << " = " << _is_center_elements << "(" << (_is_center_elements ? "true " : "false") << ")\n";
 	std::cout << "hide_additional_text" << " = " << _is_hide_additional_text << "(" << (_is_hide_additional_text ? "true " : "false") << ")\n";
 }
 
@@ -47,13 +48,13 @@ void Terminal::_load_cfg()
 	fin.open("settings.cfg");
 	if(!fin.is_open())
 	{
-		std::wcerr << "ERROR: " << __FUNCTION__ << "(): file \"settings.cfg\" isn't found \n";
+		if(!_is_hide_additional_text)
+			std::wcerr << "ERROR: " << __FUNCTION__ << "(): file \"settings.cfg\" isn't found \n";
 		std::wcin.get();
 		return;
 	}
 	fin >> _is_autosave;
 	fin >> _is_allways_warning;
-	fin >> _is_center_elements;
 	fin >> _is_hide_additional_text;
 	fin.close();
 }
@@ -63,13 +64,13 @@ void Terminal::_save_cfg()
 	fout.open("settings.cfg");
 	if(!fout.is_open())
 	{
-		std::wcerr << "ERROR: " << __FUNCTION__ << "(): file \"settings.cfg\" isn't found \n";
+		if(!_is_hide_additional_text)
+			std::wcerr << "ERROR: " << __FUNCTION__ << "(): file \"settings.cfg\" isn't found \n";
 		std::wcin.get();
 		return;
 	}
 	fout << _is_autosave << ' ';
 	fout << _is_allways_warning << ' ';
-	fout << _is_center_elements << ' ';
 	fout << _is_hide_additional_text;
 	fout.close();
 }
@@ -118,7 +119,8 @@ bool Terminal::_CPdelete()
 	for(iter; iter != _panel_list.end() && choose != 0; (choose--, iter++));
 	if(iter == _panel_list.end())
 	{
-		std::wcerr << "ERROR: " << __FUNCTION__ << "(): index of panel isn't found: " << choose << "\n";
+		if(!_is_hide_additional_text)
+			std::wcerr << "ERROR: " << __FUNCTION__ << "(): index of panel isn't found: " << choose << "\n";
 		std::wcerr << "ERROR: For users: try to type number on start of the string, when it show for you\n\a";
 		std::wcin.get();
 		return false;
@@ -178,7 +180,8 @@ bool Terminal::_CPselect()
 	for(iter; iter != _panel_list.end() && choose != 0; (choose--, iter++));
 	if(iter == _panel_list.end())
 	{
-		std::wcerr << "ERROR: " << __FUNCTION__ << "(): index of panel isn't found: " << choose << "\n";
+		if(!_is_hide_additional_text)
+			std::wcerr << "ERROR: " << __FUNCTION__ << "(): index of panel isn't found: " << choose << "\n";
 		std::wcerr << "ERROR: For users: try to type number on start of the string, when it show for you\n\a";
 		std::wcin.get();
 		return false;
@@ -198,7 +201,8 @@ bool Terminal::_CPrename()
 	for(iter; iter != _panel_list.end() && choose != 0; (choose--, iter++));
 	if(iter == _panel_list.end())
 	{
-		std::wcerr << "ERROR: " << __FUNCTION__ << "(): index of panel isn't found: " << choose << "\n";
+		if(!_is_hide_additional_text)
+			std::wcerr << "ERROR: " << __FUNCTION__ << "(): index of panel isn't found: " << choose << "\n";
 		std::wcerr << "ERROR: For users: try to type number on start of the string, when it show for you\n\a";
 		std::wcin.get();
 		return false;
@@ -258,7 +262,8 @@ bool Terminal::_CThw()
 			return true;
 		}
 	}
-	std::wcerr << "ERROR: " << __FUNCTION__ << "(): name isn't found: " << name << "\n";
+	if(!_is_hide_additional_text)
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): name isn't found: " << name << "\n";
 	std::wcerr << "ERROR: For users: try to type correctly\n\a";
 	std::wcin.get();
 	return false;
@@ -280,7 +285,8 @@ bool Terminal::_CTdone()
 			return true;
 		}
 	}
-	std::wcerr << "ERROR: " << __FUNCTION__ << "(): name isn't found: " << name << "\n";
+	if(!_is_hide_additional_text)
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): name isn't found: " << name << "\n";
 	std::wcerr << "ERROR: For users: try to type correctly\n\a";
 	std::wcin.get();
 	return false;
@@ -305,7 +311,8 @@ bool Terminal::_CTmark()
 			return true;
 		}
 	}
-	std::wcerr << "ERROR: " << __FUNCTION__ << "(): name isn't found: " << name << "\n";
+	if(!_is_hide_additional_text)
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): name isn't found: " << name << "\n";
 	std::wcerr << "ERROR: For users: try to type correctly\n\a";
 	std::wcin.get();
 	return false;
@@ -349,7 +356,6 @@ bool Terminal::_Ccmd()
 			if(token.name == L"CLEAR") _is_terminal ? _CTclear() : _CPclear();
 			if(token.name == L"CMD") _Ccmd();
 			if(token.name == L"CONFIG") _Cconfig();
-			if(token.name == L"CENTRIC_ELEMENTS" && _is_config) _CCcentric_elements();
 			if(token.name == L"ALLWAYS_WARNING" && _is_config) _CCallways_warning();
 			if(token.name == L"AUTO_SAVE" && _is_config) _CCauto_save();
 			if(token.name == L"HIDE_ADDITIONAL_TEXT" && _is_config) _CChide_additional_text();
@@ -358,7 +364,8 @@ bool Terminal::_Ccmd()
 			return true;
 		}
 	}
-	std::wcerr << "ERROR: " << __FUNCTION__ << "(): token to " << cmd << " isn't detected\n";
+	if(!_is_hide_additional_text)
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): token to " << cmd << " isn't detected\n";
 	std::wcerr << "ERROR: For users: this command wasn't found in list of accessed commands, try type correctly\n\a";
 	std::wcin.get();
 	_is_cmd = false;
@@ -371,11 +378,6 @@ bool Terminal::_Cconfig()
 	return true;
 }
 
-bool Terminal::_CCcentric_elements()
-{
-	_is_center_elements = !_is_center_elements;
-	return true;
-}
 bool Terminal::_CCallways_warning()
 {
 	_is_allways_warning = !_is_allways_warning;
@@ -419,7 +421,8 @@ bool Terminal::_CTrename()
 			return true;
 		}
 	}
-	std::wcerr << "ERROR: " << __FUNCTION__ << "(): name isn't found: " << name << "\n";
+	if(!_is_hide_additional_text) 
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): name isn't found: " << name << "\n";
 	std::wcerr << "ERROR: For users: try to type correctly\n\a";
 	std::wcin.get();
 	return false;
@@ -450,15 +453,18 @@ void Terminal::input()
 			if(token.name == L"CLEAR") _is_terminal ? _CTclear() : _CPclear();
 			if(token.name == L"CMD") _Ccmd();
 			if(token.name == L"CONFIG") _Cconfig();
-			if(token.name == L"CENTRIC_ELEMENTS" && _is_config) _CCcentric_elements();
 			if(token.name == L"ALLWAYS_WARNING" && _is_config) _CCallways_warning();
 			if(token.name == L"AUTO_SAVE" && _is_config) _CCauto_save();
 			if(token.name == L"HIDE_ADDITIONAL_TEXT" && _is_config) _CChide_additional_text();
 			if(token.name == L"ABOUT" && !_is_terminal) _CPabout();
+			if(_is_autosave && _is_terminal)
+				_cur_panel->save(_cur_panel->_name + L".dat");
+				
 			return;
 		}
 	}
-	std::wcerr << "ERROR: " << __FUNCTION__ << "(): token to " << cmd << " isn't detected\n";
+	if(!_is_hide_additional_text)
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): token to " << cmd << " isn't detected\n";
 	std::wcerr<<"ERROR: For users: this command wasn't found in list of accessed commands, try type correctly\n\a";
 	std::wcin.get();
 }

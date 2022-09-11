@@ -10,7 +10,6 @@ class Terminal
 	bool _is_quit = false;
 	bool _is_cmd = false;
 
-	bool _is_center_elements;
 	bool _is_autosave;
 	bool _is_allways_warning;
 	bool _is_hide_additional_text;
@@ -39,7 +38,6 @@ class Terminal
 	bool _Ccmd();
 	bool _Cconfig();
 	void _Cshow();
-	bool _CCcentric_elements();
 	bool _CCallways_warning();
 	bool _CCauto_save();
 	bool _CChide_additional_text();
@@ -101,7 +99,6 @@ static std::list<Token> list_panel_token = {
 };
 
 static std::list<Token> list_config_token = {
-	{L"CENTRIC_ELEMENTS",L"center_elements"},
 	{L"ALLWAYS_WARNING",L"allways_warning"},
 	{L"AUTO_SAVE",L"autosave"},
 	{L"HIDE_ADDITIONAL_TEXT",L"hide_additional_text"},
