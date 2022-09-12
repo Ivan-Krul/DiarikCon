@@ -360,6 +360,9 @@ bool Terminal::_Ccmd()
 			if(token.name == L"AUTO_SAVE" && _is_config) _CCauto_save();
 			if(token.name == L"HIDE_ADDITIONAL_TEXT" && _is_config) _CChide_additional_text();
 			if(token.name == L"ABOUT" && !_is_terminal) _CPabout();
+			if(token.name == L"SET_LINK" && _is_terminal) _CTset_link();
+			if(token.name == L"SHOW_LINK" && _is_terminal) _CTshow_link();
+			if(token.name == L"GOTO" && _is_terminal) _CTgoto();
 			_is_cmd = false;
 			return true;
 		}
@@ -457,6 +460,9 @@ void Terminal::input()
 			if(token.name == L"AUTO_SAVE" && _is_config) _CCauto_save();
 			if(token.name == L"HIDE_ADDITIONAL_TEXT" && _is_config) _CChide_additional_text();
 			if(token.name == L"ABOUT" && !_is_terminal) _CPabout();
+			if(token.name == L"SET_LINK" && _is_terminal) _CTset_link();
+			if(token.name == L"SHOW_LINK" && _is_terminal) _CTshow_link();
+			if(token.name == L"GOTO" && _is_terminal) _CTgoto();
 			if(_is_autosave && _is_terminal)
 				_cur_panel->save(_cur_panel->_name + L".dat");
 				
@@ -477,4 +483,76 @@ bool Terminal::is_terminal()
 bool Terminal::is_quit()
 {
 	return _is_quit;
+}
+
+void Terminal::_CTset_link()
+{
+	bool inp = false;
+	Week wek = _input_dayweek(inp);
+	if(inp) return;
+	auto name = std::wstring();
+	if(!_is_cmd) std::wcout << "\tName of lesson: ";
+	std::wcin >> name;
+	for(int i = 0; i < (*_cur_panel)[wek].size(); i++)
+	{
+		if((*_cur_panel)[wek][i].name() == name)
+		{
+			auto link = std::wstring();
+			if(!_is_cmd) std::wcout << "\tLink to lesson: ";
+			std::wcin >> link;
+			(*_cur_panel)[wek][i].mark_lessonlink(link);
+			return;
+		}
+	}
+	if(!_is_hide_additional_text)
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): name isn't found: " << name << "\n";
+	std::wcerr << "ERROR: For users: try to type correctly\n\a";
+	std::wcin.get();
+}
+
+void Terminal::_CTshow_link()
+{
+	bool inp = false;
+	Week wek = _input_dayweek(inp);
+	if(inp) return;
+	auto name = std::wstring();
+	if(!_is_cmd) std::wcout << "\tName of lesson: ";
+	std::wcin >> name;
+	for(int i = 0; i < (*_cur_panel)[wek].size(); i++)
+	{
+		if((*_cur_panel)[wek][i].name() == name)
+		{
+			std::wcout <<"Lesson link: " << (*_cur_panel)[wek][i].lessonlink()<<'\n';
+			return;
+		}
+	}
+	if(!_is_hide_additional_text)
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): name isn't found: " << name << "\n";
+	std::wcerr << "ERROR: For users: try to type correctly\n\a";
+	std::wcin.get();
+}
+
+void Terminal::_CTgoto()
+{
+	bool inp = false;
+	Week wek = _input_dayweek(inp);
+	if(inp) return;
+	auto name = std::wstring();
+	if(!_is_cmd) std::wcout << "\tName of lesson: ";
+	std::wcin >> name;
+	for(int i = 0; i < (*_cur_panel)[wek].size(); i++)
+	{
+		if((*_cur_panel)[wek][i].name() == name)
+		{
+			auto browser = std::wstring();
+			if(!_is_cmd) std::wcout << "\tBrowser: ";
+			std::wcin >> browser;
+			(*_cur_panel)[wek][i].goto_link(browser);
+			return;
+		}
+	}
+	if(!_is_hide_additional_text)
+		std::wcerr << "ERROR: " << __FUNCTION__ << "(): name isn't found: " << name << "\n";
+	std::wcerr << "ERROR: For users: try to type correctly\n\a";
+	std::wcin.get();
 }

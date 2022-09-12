@@ -58,7 +58,7 @@ std::wstring WorkWeek::wform()
 			sstream << j + 1<<":\t[" << _week[i][j].name() << "]";
 			for(int k = 0; k < maxch_name - _week[i][j].name().size(); k++)
 				sstream << " ";
-			sstream << ": [" << _week[i][j].hw() << "]";
+			sstream << ": ("<<(_week[i][j].lessonlink().empty()? std::wstring(L""): std::wstring(L"link")) << ") [" << _week[i][j].hw() << "]";
 			for(int k = 0; k < maxch_hw - _week[i][j].hw().size() + 1; k++)
 				sstream << " ";
 			if(_week[i][j].is_done())
@@ -96,7 +96,7 @@ void WorkWeek::load(std::wstring dir_)
 	for(int i = 0; i < 7; i++)
 	{
 		std::wstring buf;
-		std::wstring name, hw;
+		std::wstring name, hw,link;
 		bool is_done;
 		short mark;
 		int size;
@@ -117,6 +117,8 @@ void WorkWeek::load(std::wstring dir_)
 			_week[i][j].mark_homework(hw);
 			if(is_done) _week[i][j].mark_done();
 			_week[i][j].mark_mark(mark);
+			std::getline(ifs, link);
+			_week[i][j].mark_lessonlink(link);
 		}
 	}
 
@@ -178,6 +180,7 @@ void WorkWeek::save(std::wstring dir_)
 			ofs << _week[i][j].hw() << '\n';
 			ofs << _week[i][j].is_done() << '\n';
 			ofs << _week[i][j].mark() << '\n';
+			ofs << _week[i][j].lessonlink() << '\n';
 		}
 	}
 	ofs.close();

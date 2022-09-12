@@ -53,6 +53,9 @@ class Terminal
 	void _Chelp();
 	bool _CTrename();
 	bool _CTclear();
+	void _CTset_link();
+	void _CTshow_link();
+	void _CTgoto();
 public:
 	Terminal() { _load_cfg(); }
 	std::wstring cmd;
@@ -81,6 +84,9 @@ static std::list<Token> list_terminal_token = {
 	{L"CMD",L"cmd"},
 	{L"SAVE",L"save"},
 	{L"CONFIG",L"config"},
+	{L"SET_LINK",L"link"},
+	{L"SHOW_LINK",L"showlink"},
+	{L"GOTO",L"goto"},
 };
 
 static std::list<Token> list_panel_token = {
