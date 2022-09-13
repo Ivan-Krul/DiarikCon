@@ -223,7 +223,6 @@ bool Terminal::_CTdelete()
 	if(!_is_cmd) std::wcout << "\tName of lesson: ";
 	std::wstring name;
 	std::wcin >> name;
-
 	(*_cur_panel)[wek].delet(name);
 
 	return true;
