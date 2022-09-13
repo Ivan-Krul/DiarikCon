@@ -232,7 +232,7 @@ bool Terminal::_CTdelete()
 void Terminal::_CPabout()
 {
 	const static int mayor_version = 1;
-	const static int minor_version = 3;
+	const static int minor_version = 4;
 	std::wcout << "created @Ivan-Krul\n";
 	std::wcout << "version " << mayor_version << '.' << minor_version << '\n';
 }
